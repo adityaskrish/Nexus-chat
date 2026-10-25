@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#07090e]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS CHAT // Sci-Fi Workspace</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts: Orbitron & Rajdhani for futuristic sci-fi typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            rajdhani: ['Rajdhani', 'sans-serif'],
+          },
+          colors: {
+            cyberDark: '#07090e',
+            cyberCard: '#0d111a',
+            cyberBorder: '#1e293b',
+            cyanNeon: '#00f3ff',
+            purpleNeon: '#a855f7',
+            pinkNeon: '#ff007f',
+            yellowNeon: '#ffe600',
+            greenNeon: '#10b981'
+          },
+          boxShadow: {
+            'cyan-glow': '0 0 15px rgba(0, 243, 255, 0.35)',
+            'purple-glow': '0 0 15px rgba(168, 85, 247, 0.35)',
+            'pink-glow': '0 0 15px rgba(255, 0, 127, 0.4)',
+            'yellow-glow': '0 0 15px rgba(255, 230, 0, 0.4)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Sci-Fi Grid Background */
+    .cyber-bg-grid {
+      background-image: linear-gradient(to right, rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+
+    /* Cyber Glassmorphism effects */
+    .nexus-glass {
+      background: rgba(13, 17, 26, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+    }
+
+    .nexus-glass-hover:hover {
+      background: rgba(0, 243, 255, 0.08);
+      border-color: rgba(0, 243, 255, 0.4);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    }
+
+    /* Custom Sci-Fi Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #07090e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 243, 255, 0.3);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00f3ff;
+      box-shadow: 0 0 10px #00f3ff;
+    }
+
+    /* Glowing Text and Animations */
+    .glow-text-cyan {
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+    }
+    .glow-text-pink {
+      text-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
+    }
+    .glow-text-yellow {
+      text-shadow: 0 0 8px rgba(255, 230, 0, 0.6);
+    }
+
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(1000%); }
+    }
+    .scanline-effect {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
+      animation: scanline 8s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+    .animate-pulse-glow {
+      animation: pulse-glow 3s infinite ease-in-out;
+    }
+
+    @keyframes broadcast-slide {
+      0% { transform: translateY(-100%); opacity: 0; }
+      15% { transform: translateY(0); opacity: 1; }
+      85% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-100%); opacity: 0; }
+    }
+    .animate-broadcast {
+      animation: broadcast-slide 7s ease-in-out forwards;
+    }
+  </style>
+</head>
+<body class="h-full font-rajdhani text-gray-200 select-none overflow-hidden antialiased bg-cyberDark cyber-bg-grid relative">
+
+  <!-- Scanline visual accent -->
+  <div class="scanline-effect z-50"></div>
+
+  <div id="broadcast-banner-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-xl pointer-events-none px-4 hidden">
+    <div class="bg-[#18002e]/95 border-2 border-pinkNeon text-white p-4 rounded-2xl shadow-pink-glow backdrop-blur-xl flex items-center gap-4 animate-broadcast pointer-events-auto">
+      <div class="w-12 h-12 rounded-xl bg-pinkNeon/20 border border-pinkNeon flex items-center justify-center shrink-0">
+        <i class="fa-solid fa-bullhorn text-pinkNeon text-2xl animate-bounce"></i>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <span class="font-orbitron text-xs font-bold text-pinkNeon uppercase tracking-widest">SYSTEM BROADCAST</span>
+          <span class="text-[10px] bg-yellowNeon/20 text-yellowNeon border border-yellowNeon/40 px-1.5 py-0.2 rounded font-bold uppercase">👑 OWNER</span>
+        </div>
+        <p id="broadcast-banner-text" class="text-sm font-bold text-white mt-0.5">Alert message text...</p>
+      </div>
+      <button onclick="closeBroadcastBanner()" class="text-gray-400 hover:text-white p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <div id="app" class="h-full flex w-full relative overflow-hidden">
+
+    <!-- ================= AUTHENTICATION OVERLAY ================= -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#05070a]/90 backdrop-blur-md p-4">
+      <div class="w-full max-w-md nexus-glass p-8 rounded-2xl border border-cyanNeon/30 shadow-cyan-glow relative overflow-hidden">
+        
+        <!-- Sci-Fi Corner Brackets -->
+        <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-cyanNeon"></div>
+        <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-cyanNeon"></div>
+        <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-cyanNeon"></div>
+        <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-cyanNeon"></div>
+
+        <!-- Header -->
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-gradient-to-tr from-cyanNeon/20 to-purpleNeon/30 rounded-2xl border border-cyanNeon flex items-center justify-center mx-auto mb-3 shadow-cyan-glow animate-pulse-glow">
+            <i class="fa-solid fa-atom text-3xl text-cyanNeon"></i>
+          </div>
+          <h2 class="text-2xl font-orbitron font-extrabold text-white tracking-widest glow-text-cyan uppercase" id="auth-title">NEXUS LOGIN</h2>
+          <p class="text-xs text-gray-400 mt-1 uppercase tracking-wider" id="auth-subtitle">Quantum Encrypted Workspace Access</p>
+        </div>
+
+        <!-- Error Alert -->
+        <div id="auth-error" class="hidden mb-4 p-3 bg-red-900/40 border border-red-500/50 rounded-lg text-red-300 text-xs flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-red-400 shrink-0"></i>
+          <span id="auth-error-msg">Authentication error occurred.</span>
+        </div>
+
+        <!-- Auth Form -->
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <!-- Username Field (Signup Only) -->
+          <div id="username-field-group" class="hidden mb-4">
+            <label class="block text-xs font-bold text-cyanNeon uppercase tracking-wider mb-1">Cyber Tag / Handle</label>
+            <input type="text" id="auth-username" class="w-full bg-[#07090e]/80 border border-cyanNeon/30 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-cyanNeon transition" placeholder="e.g. Thehouneredone">
+          </div>
+
+          <!-- Email Field -->
+          <div class="mb-4">
+            <label class="block text-xs font-bold text-cyanNeon uppercase tracking-wider mb-1">Access Neural ID (Email)</label>
+            <input type="email" id="auth-email" required class="w-full bg-[#07090e]/80 border border-cyanNeon/30 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-cyanNeon transition" placeholder="gojosaturo@gmail.com">
+          </div>
+
+          <!-- Password Field -->
+          <div class="mb-5">
+            <label class="block text-xs font-bold text-cyanNeon uppercase tracking-wider mb-1">Passkey</label>
+            <input type="password" id="auth-password" required minlength="6" class="w-full bg-[#07090e]/80 border border-cyanNeon/30 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-cyanNeon transition" placeholder="••••••••">
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-cyanNeon via-purpleNeon to-pinkNeon hover:opacity-90 text-black font-orbitron font-extrabold py-3 rounded-lg transition duration-200 text-sm shadow-cyan-glow uppercase tracking-wider">
+            INITIALIZE SESSION
+          </button>
+        </form>
+
+        <!-- Toggle Login/Signup -->
+        <div class="mt-4 text-xs text-center text-gray-400">
+          <span id="auth-toggle-prompt">Unregistered Operative?</span>
+          <button type="button" onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-cyanNeon hover:underline font-bold ml-1 uppercase">
+            Create Identity
+          </button>
+        </div>
+
+        <!-- Quick Credentials Hint -->
+        <div class="mt-4 pt-3 border-t border-cyanNeon/10 text-[11px] text-gray-400 text-center">
+          <p class="text-yellowNeon font-bold flex items-center justify-center gap-1">
+            <i class="fa-solid fa-crown text-xs"></i> Pre-configured Owner Identity:
+          </p>
+          <p class="text-gray-300 font-mono mt-0.5">gojosaturo@gmail.com // SaeIsCold</p>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 1. Leftmost Rail: Server & DM Selector -->
+    <div class="w-20 bg-[#05070b]/90 border-r border-cyanNeon/10 flex flex-col items-center py-4 gap-3 z-30 shrink-0">
+      
+      <!-- Nexus DM Home Button -->
+      <div class="relative group cursor-pointer" onclick="openDirectMessagesHome()" title="Direct Messages Workspace">
+        <div id="dm-home-btn" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyanNeon/20 to-purpleNeon/20 border border-cyanNeon/40 flex items-center justify-center text-cyanNeon group-hover:scale-105 group-hover:border-cyanNeon transition duration-200 shadow-cyan-glow">
+          <i class="fa-solid fa-comments text-xl"></i>
+        </div>
+        <div id="dm-indicator" class="absolute left-0 top-3 w-1 h-6 bg-cyanNeon rounded-r hidden"></div>
+        <span class="absolute left-20 bg-cyberCard border border-cyanNeon/30 text-cyanNeon text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-50">
+          Direct Messages
+        </span>
+      </div>
+
+      <div class="w-10 h-[1px] bg-cyanNeon/20 rounded"></div>
+
+      <!-- Server Rail List -->
+      <div id="server-rail-list" class="flex-1 w-full flex flex-col items-center gap-3 overflow-y-auto no-scrollbar py-1">
+        <!-- Dynamically populated server icons -->
+      </div>
+
+      <!-- Add New Server Button -->
+      <div class="relative group cursor-pointer" onclick="openCreateServerModal()" title="Construct Cyber Server">
+        <div class="w-12 h-12 rounded-2xl bg-cyberCard border border-cyanNeon/30 border-dashed flex items-center justify-center text-cyanNeon hover:bg-cyanNeon/10 hover:border-cyanNeon hover:scale-105 transition duration-200">
+          <i class="fa-solid fa-plus text-lg"></i>
+        </div>
+        <span class="absolute left-20 bg-cyberCard border border-cyanNeon/30 text-cyanNeon text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-50">
+          New Server
+        </span>
+      </div>
+
+    </div>
+
+
+    <!-- 2. Secondary Navigation: Channels or DM contacts -->
+    <div class="w-64 bg-[#0a0d14]/80 backdrop-blur-md flex flex-col justify-between shrink-0 border-r border-cyanNeon/10 relative">
+      
+      <!-- Top Section Header -->
+      <div class="h-14 border-b border-cyanNeon/10 px-4 flex items-center justify-between font-orbitron font-extrabold text-white">
+        <div class="flex items-center gap-2 overflow-hidden">
+          <i id="sidebar-header-icon" class="fa-solid fa-server text-cyanNeon"></i>
+          <span id="sidebar-header-title" class="truncate text-sm tracking-wider uppercase glow-text-cyan">NEXUS PRIME</span>
+        </div>
+        <button id="add-channel-btn" onclick="openCreateChannelModal()" class="text-xs text-gray-400 hover:text-cyanNeon p-1 rounded transition" title="New Channel">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+
+      <!-- Channel / DM List -->
+      <div class="flex-1 overflow-y-auto px-3 py-3 space-y-1" id="channels-or-dms-list">
+        <!-- Populated via JS -->
+      </div>
+
+      <!-- User Footer Bar -->
+      <div class="h-16 bg-[#06080d] border-t border-cyanNeon/10 px-3 flex items-center justify-between">
+        <div class="flex items-center gap-2 overflow-hidden cursor-pointer p-1 rounded-lg hover:bg-cyanNeon/5 flex-1" onclick="openMyProfileModal()">
+          <div class="relative shrink-0">
+            <div id="user-avatar-badge" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyanNeon/30 to-purpleNeon/40 border border-cyanNeon flex items-center justify-center font-orbitron font-bold text-white text-xs shadow-cyan-glow">
+              ?
+            </div>
+            <div id="user-status-dot" class="w-2.5 h-2.5 bg-greenNeon border border-black rounded-full absolute -bottom-0.5 -right-0.5"></div>
+          </div>
+          <div class="flex flex-col truncate">
+            <div class="flex items-center gap-1">
+              <span id="user-display-name" class="text-xs font-bold text-white truncate">Agent</span>
+              <span id="user-role-badge" class="hidden text-[9px] bg-yellowNeon/20 border border-yellowNeon/50 text-yellowNeon px-1 rounded font-extrabold uppercase flex items-center gap-0.5">
+                <i class="fa-solid fa-crown text-[8px]"></i> OWNER
+              </span>
+            </div>
+            <span id="user-tag-sub" class="text-[10px] text-gray-400 truncate">Online Operative</span>
+          </div>
+        </div>
+
+        <button onclick="handleLogout()" class="p-2 text-gray-400 hover:text-red-400 rounded-lg transition" title="Disconnect Session">
+          <i class="fa-solid fa-power-off"></i>
+        </button>
+      </div>
+
+    </div>
+
+
+    <!-- 3. Central Workspace: HUD Chat Header, Message Feed, Input Bar -->
+    <div class="flex-1 flex flex-col bg-[#07090e]/95 relative overflow-hidden">
+      
+      <!-- Top Sci-Fi HUD Channel Header -->
+      <div class="h-14 border-b border-cyanNeon/10 px-4 flex items-center justify-between bg-[#0a0d14]/60 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+          <i id="active-chat-icon" class="fa-solid fa-hashtag text-cyanNeon text-lg"></i>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="active-chat-title" class="font-orbitron font-extrabold text-white text-sm tracking-wider uppercase glow-text-cyan">general</span>
+              <span id="active-chat-type-badge" class="text-[10px] bg-cyanNeon/10 border border-cyanNeon/30 text-cyanNeon px-1.5 py-0.5 rounded uppercase font-bold">CHANNEL</span>
+            </div>
+            <span class="text-[11px] text-gray-400 truncate hidden sm:block" id="active-chat-topic">
+              Primary public quantum neural channel.
+            </span>
+          </div>
+        </div>
+
+        <!-- Owner & Mod Action Suite -->
+        <div class="flex items-center gap-2">
+          <!-- Developer / Owner Purge Button -->
+          <button id="owner-purge-btn" onclick="promptPurgeChannel()" class="hidden px-2.5 py-1 bg-red-900/40 hover:bg-red-800/60 border border-red-500/50 text-red-300 text-xs font-bold rounded-lg transition items-center gap-1.5 shadow-sm" title="Owner Power: Clear Channel Chat">
+            <i class="fa-solid fa-trash-can text-red-400"></i>
+            <span class="hidden md:inline uppercase font-orbitron">Purge Feed</span>
+          </button>
+
+          <!-- Developer / Owner Broadcast Button -->
+          <button id="owner-broadcast-btn" onclick="openBroadcastModal()" class="hidden px-2.5 py-1 bg-purpleNeon/20 hover:bg-purpleNeon/40 border border-purpleNeon/50 text-purpleNeon text-xs font-bold rounded-lg transition items-center gap-1.5 shadow-purple-glow" title="Owner Power: Broadcast System Alert">
+            <i class="fa-solid fa-bullhorn text-pinkNeon"></i>
+            <span class="hidden md:inline uppercase font-orbitron">Broadcast Alert</span>
+          </button>
+
+          <!-- Audio FX Switch -->
+          <button id="audio-toggle-btn" onclick="toggleAudioFX()" class="p-2 text-cyanNeon hover:bg-cyanNeon/10 rounded-lg transition" title="Toggle Sci-Fi SFX">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+
+          <!-- Toggle Members List -->
+          <button onclick="toggleMembersSidebar()" class="p-2 text-gray-400 hover:text-cyanNeon rounded-lg transition md:hidden" title="Toggle Operatives List">
+            <i class="fa-solid fa-users"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Container -->
+      <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="text-center py-12 text-gray-400">
+          <i class="fa-solid fa-circle-notch fa-spin text-3xl text-cyanNeon mb-3"></i>
+          <p class="font-orbitron text-xs tracking-widest text-cyanNeon">SYNCHRONIZING QUANTUM FEED...</p>
+        </div>
+      </div>
+
+      <!-- Quick Emoji Picker Popover -->
+      <div id="emoji-picker" class="hidden absolute bottom-20 right-6 bg-[#0d111a] border border-cyanNeon/30 rounded-xl p-3 shadow-cyan-glow z-40 grid grid-cols-6 gap-2 text-2xl backdrop-blur-xl">
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('⚡')">⚡</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🔥')">🔥</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('👑')">👑</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🤖')">🤖</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🚀')">🚀</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🌌')">🌌</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('👍')">👍</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('❤️')">❤️</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('💀')">💀</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🎯')">🎯</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('💻')">💻</span>
+        <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🎉')">🎉</span>
+      </div>
+
+      <!-- Message Input & Timed Mute Banner Bar -->
+      <div class="p-4 bg-[#0a0d14]/80 border-t border-cyanNeon/10">
+        
+        <!-- Muted Warning Alert Banner -->
+        <div id="muted-banner" class="hidden mb-3 p-3 bg-red-950/80 border border-red-500/80 rounded-xl text-red-300 text-xs flex items-center justify-between shadow-lg">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-microphone-slash text-lg text-red-400 animate-pulse"></i>
+            <div>
+              <p class="font-orbitron font-bold uppercase text-red-400">NEURAL MUTE ENFORCED BY OWNER</p>
+              <p class="text-[11px] text-gray-300" id="muted-time-remaining">Mute expires in: --:--</p>
+            </div>
+          </div>
+          <span class="text-[10px] bg-red-900/50 border border-red-500/40 px-2 py-1 rounded font-bold uppercase">LOCKED</span>
+        </div>
+
+        <!-- Chat Input Form -->
+        <form id="chat-input-form" onsubmit="handleSendMessage(event)" class="bg-[#0d111a] border border-cyanNeon/20 rounded-xl px-4 py-2.5 flex items-center gap-3 focus-within:border-cyanNeon transition shadow-cyan-glow">
+          <button type="button" onclick="toggleEmojiPicker()" class="text-gray-400 hover:text-yellowNeon text-lg transition">
+            <i class="fa-solid fa-face-smile"></i>
+          </button>
+          
+          <input type="text" id="message-input" autocomplete="off" placeholder="Transmit neural message..." class="bg-transparent text-white w-full text-sm focus:outline-none placeholder-gray-500 font-rajdhani text-base">
+          
+          <button type="submit" id="send-msg-btn" class="bg-gradient-to-r from-cyanNeon to-purpleNeon hover:opacity-90 text-black px-4 py-1.5 rounded-lg font-orbitron font-bold text-xs uppercase tracking-wider transition shadow-cyan-glow flex items-center gap-1.5">
+            <span>Send</span>
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+
+    <!-- 4. Rightmost Sidebar: Member List & Online Operatives -->
+    <div id="members-sidebar" class="w-64 bg-[#0a0d14]/90 border-l border-cyanNeon/10 p-4 hidden md:flex flex-col shrink-0 overflow-y-auto">
+      <div class="text-xs font-orbitron font-bold text-cyanNeon uppercase mb-3 tracking-widest flex items-center justify-between border-b border-cyanNeon/10 pb-2">
+        <span>ACTIVE OPERATIVES</span>
+        <span id="online-count-badge" class="bg-cyanNeon/10 border border-cyanNeon/30 text-cyanNeon text-[10px] px-1.5 py-0.5 rounded">0</span>
+      </div>
+
+      <div id="members-list" class="space-y-2 flex-1">
+        <!-- Dynamically rendered members with owner/dev badges -->
+      </div>
+    </div>
+
+
+    <!-- ================= MODALS CONTAINER ================= -->
+
+    <!-- Create Server Modal -->
+    <div id="modal-create-server" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <div class="w-full max-w-md nexus-glass p-6 rounded-2xl border border-cyanNeon/40 shadow-cyan-glow">
+        <h3 class="text-lg font-orbitron font-bold text-white mb-1 uppercase tracking-wider glow-text-cyan">Construct Cyber Server</h3>
+        <p class="text-xs text-gray-400 mb-4">Initialize a new server workspace across the Nexus network.</p>
+
+        <form onsubmit="handleCreateServerSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-cyanNeon uppercase mb-1">Server Name</label>
+            <input type="text" id="new-server-name" required class="w-full bg-[#07090e] border border-cyanNeon/20 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-cyanNeon" placeholder="e.g. Cyber Matrix">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-cyanNeon uppercase mb-1">Icon Glyph / Emoji</label>
+            <input type="text" id="new-server-icon" maxlength="2" required class="w-full bg-[#07090e] border border-cyanNeon/20 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-cyanNeon" value="🌐">
+          </div>
+          <div class="flex justify-end gap-3 pt-2">
+            <button type="button" onclick="closeModal('modal-create-server')" class="px-4 py-2 bg-gray-800 text-gray-300 text-xs font-bold rounded-lg hover:bg-gray-700">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-cyanNeon text-black font-orbitron font-bold text-xs rounded-lg hover:bg-cyanNeon/80 shadow-cyan-glow uppercase">Construct</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Create Channel Modal -->
+    <div id="modal-create-channel" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <div class="w-full max-w-md nexus-glass p-6 rounded-2xl border border-cyanNeon/40 shadow-cyan-glow">
+        <h3 class="text-lg font-orbitron font-bold text-white mb-1 uppercase tracking-wider glow-text-cyan">New Channel Sub-Node</h3>
+        <p class="text-xs text-gray-400 mb-4">Create a new message stream in the active server.</p>
+
+        <form onsubmit="handleCreateChannelSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-cyanNeon uppercase mb-1">Channel Tag Name</label>
+            <input type="text" id="new-channel-name" required class="w-full bg-[#07090e] border border-cyanNeon/20 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-cyanNeon" placeholder="e.g. quantum-labs">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-cyanNeon uppercase mb-1">Channel Topic Description</label>
+            <input type="text" id="new-channel-topic" class="w-full bg-[#07090e] border border-cyanNeon/20 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-cyanNeon" placeholder="e.g. Discussions regarding neural interfaces.">
+          </div>
+          <div class="flex justify-end gap-3 pt-2">
+            <button type="button" onclick="closeModal('modal-create-channel')" class="px-4 py-2 bg-gray-800 text-gray-300 text-xs font-bold rounded-lg hover:bg-gray-700">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-cyanNeon text-black font-orbitron font-bold text-xs rounded-lg hover:bg-cyanNeon/80 shadow-cyan-glow uppercase">Create Channel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Purge Chat Confirmation Modal (Owner Power) -->
+    <div id="modal-purge-chat" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+      <div class="w-full max-w-md bg-[#12080a] p-6 rounded-2xl border border-red-500/60 shadow-[0_0_25px_rgba(239,68,68,0.3)] text-center">
+        <div class="w-14 h-14 bg-red-900/40 border border-red-500 text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl animate-pulse">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="text-lg font-orbitron font-bold text-red-400 mb-1 uppercase tracking-wider">PURGE CHANNEL MESSAGES?</h3>
+        <p class="text-xs text-gray-300 mb-6">Warning Owner: This action will permanently erase and dematerialize ALL neural messages in this active stream.</p>
+
+        <div class="flex justify-center gap-4">
+          <button type="button" onclick="closeModal('modal-purge-chat')" class="px-5 py-2 bg-gray-800 text-gray-300 text-xs font-bold rounded-lg hover:bg-gray-700">ABORT</button>
+          <button type="button" onclick="executePurgeChannel()" class="px-5 py-2 bg-red-600 hover:bg-red-500 text-white font-orbitron font-bold text-xs rounded-lg shadow-lg uppercase">EXECUTE PURGE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Owner Broadcast Alert Modal -->
+    <div id="modal-broadcast" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+      <div class="w-full max-w-md nexus-glass p-6 rounded-2xl border border-purpleNeon/60 shadow-purple-glow">
+        <h3 class="text-lg font-orbitron font-bold text-purpleNeon mb-1 uppercase tracking-wider glow-text-pink flex items-center gap-2">
+          <i class="fa-solid fa-bullhorn text-pinkNeon"></i> Owner System Broadcast
+        </h3>
+        <p class="text-xs text-gray-300 mb-4">Transmit a highlighted server-wide announcement overlay to all operatives.</p>
+
+        <form onsubmit="handleSendBroadcast(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-pinkNeon uppercase mb-1">Broadcast Announcement</label>
+            <textarea id="broadcast-content" required rows="3" class="w-full bg-[#07090e] border border-purpleNeon/40 text-white p-3 rounded-lg text-sm focus:outline-none focus:border-pinkNeon" placeholder="System alert message..."></textarea>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button type="button" onclick="closeModal('modal-broadcast')" class="px-4 py-2 bg-gray-800 text-gray-300 text-xs font-bold rounded-lg hover:bg-gray-700">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-gradient-to-r from-purpleNeon to-pinkNeon text-white font-orbitron font-bold text-xs rounded-lg shadow-pink-glow uppercase">Transmit Alert</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- User Moderation & DM Action Modal (Owner Timed Mute Suite) -->
+    <div id="modal-user-mod" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+      <div class="w-full max-w-md nexus-glass p-6 rounded-2xl border border-cyanNeon/40 shadow-cyan-glow">
+        
+        <div class="flex items-center gap-3 mb-4">
+          <div id="mod-modal-avatar" class="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyanNeon/30 to-purpleNeon/40 border border-cyanNeon flex items-center justify-center font-orbitron font-bold text-white text-lg">
+            U
+          </div>
+          <div>
+            <h3 id="mod-modal-username" class="text-base font-orbitron font-bold text-white uppercase tracking-wider">User Handle</h3>
+            <span id="mod-modal-status" class="text-xs text-cyanNeon font-bold uppercase">Online Operative</span>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="space-y-3">
+          <!-- Start DM Button -->
+          <button id="mod-modal-dm-btn" onclick="startDirectMessageWithTarget()" class="w-full py-2.5 bg-gradient-to-r from-cyanNeon/20 to-purpleNeon/20 border border-cyanNeon/40 hover:border-cyanNeon text-cyanNeon font-bold rounded-xl text-xs uppercase flex items-center justify-center gap-2 transition">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Initialize Private Direct Message</span>
+          </button>
+
+          <!-- Owner Timed Mute Controls -->
+          <div id="owner-mute-controls" class="hidden pt-3 border-t border-cyanNeon/20">
+            <p class="text-xs font-orbitron font-bold text-yellowNeon uppercase mb-2 flex items-center gap-1.5 glow-text-yellow">
+              <i class="fa-solid fa-crown text-yellowNeon"></i> Owner Moderation Suite
+            </p>
+
+            <label class="block text-[11px] text-gray-400 mb-1.5 uppercase">Enforce Timed Neural Mute:</label>
+            <div class="grid grid-cols-4 gap-2 mb-3">
+              <button onclick="applyTimedMute(1)" class="py-1.5 bg-red-950/50 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs rounded font-bold transition">1 Min</button>
+              <button onclick="applyTimedMute(5)" class="py-1.5 bg-red-950/50 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs rounded font-bold transition">5 Mins</button>
+              <button onclick="applyTimedMute(10)" class="py-1.5 bg-red-950/50 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs rounded font-bold transition">10 Mins</button>
+              <button onclick="applyTimedMute(60)" class="py-1.5 bg-red-950/50 hover:bg-red-900 border border-red-500/40 text-red-300 text-xs rounded font-bold transition">1 Hour</button>
+            </div>
+
+            <button onclick="liftMute()" class="w-full py-2 bg-green-950/50 hover:bg-green-900 border border-green-500/40 text-green-300 text-xs rounded-lg font-bold transition uppercase">
+              <i class="fa-solid fa-microphone mr-1"></i> Lift Neural Mute
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-5 flex justify-end">
+          <button type="button" onclick="closeModal('modal-user-mod')" class="px-4 py-1.5 bg-gray-800 text-gray-300 text-xs font-bold rounded-lg hover:bg-gray-700">Close</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Firebase Modular SDK Imports -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      updateProfile, 
+      onAuthStateChanged, 
+      signOut,
+      signInWithCustomToken
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      doc, 
+      setDoc, 
+      addDoc, 
+      getDocs,
+      deleteDoc,
+      onSnapshot, 
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Firebase Pre-integrated Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAA3DH6J7rAbJpJ0S8HWpcbJOhIarC9aa8",
+      authDomain: "nexus-chat-b08ad.firebaseapp.com",
+      projectId: "nexus-chat-b08ad",
+      storageBucket: "nexus-chat-b08ad.firebasestorage.app",
+      messagingSenderId: "288153271485",
+      appId: "1:288153271485:web:feb594a566e1b8ccd04bd4",
+      measurementId: "G-JLERQS6WWE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Artifact App Identifier
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'nexus-chat-b08ad';
+
+    // Application State Variables
+    let currentUser = null;
+    let userRole = 'user'; // 'owner' | 'mod' | 'user'
+    let mutedUntilTimestamp = null;
+    let isAudioEnabled = true;
+    let isSignupMode = false;
+
+    let activeServerId = 'nexus-prime';
+    let activeChannelId = 'general';
+    let activeViewMode = 'channel'; // 'channel' | 'dm'
+    let activeDMUserId = null;
+    let selectedTargetUser = null;
+
+    let unsubscribeMessages = null;
+    let unsubscribeChannels = null;
+    let unsubscribeServers = null;
+    let unsubscribePresence = null;
+    let unsubscribeBroadcasts = null;
+    let muteTimerInterval = null;
+
+    /* ================= Web Audio API Synthesizer ================= */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSciFiSound(type) {
+      if (!isAudioEnabled) return;
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'send') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(1200, now + 0.12);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'purge') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(900, now);
+          osc.frequency.exponentialRampToValueAtTime(100, now + 0.4);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'broadcast') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.setValueAtTime(100, now + 0.1);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        }
+      } catch (e) {
+        console.warn("Audio Context error:", e);
+      }
+    }
+
+    window.toggleAudioFX = function() {
+      isAudioEnabled = !isAudioEnabled;
+      const btn = document.getElementById('audio-toggle-btn');
+      if (isAudioEnabled) {
+        btn.classList.add('text-cyanNeon');
+        btn.classList.remove('text-gray-500');
+        playSciFiSound('click');
+      } else {
+        btn.classList.remove('text-cyanNeon');
+        btn.classList.add('text-gray-500');
+      }
+    };
+
+
+    /* ================= SPECIAL OWNER PRIVILEGE ENGINE ================= */
+    function checkAndAssignOwnerPrivileges(email, username) {
+      const targetEmail = (email || '').toLowerCase().trim();
+      const targetUsername = (username || '').toLowerCase().trim();
+
+      // Check for exact specified owner credentials:
+      // Email: gojosaturo@gmail.com
+      // Username: Thehouneredone
+      if (targetEmail === 'gojosaturo@gmail.com' || targetUsername === 'thehouneredone') {
+        return 'owner';
+      }
+      return 'user';
+    }
+
+    /* ================= AUTHENTICATION HANDLERS ================= */
+    window.toggleAuthMode = function() {
+      playSciFiSound('click');
+      isSignupMode = !isSignupMode;
+      const title = document.getElementById('auth-title');
+      const subtitle = document.getElementById('auth-subtitle');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const toggleBtn = document.getElementById('auth-toggle-btn');
+      const togglePrompt = document.getElementById('auth-toggle-prompt');
+      const usernameGroup = document.getElementById('username-field-group');
+
+      if (isSignupMode) {
+        title.innerText = 'CREATE IDENTITY';
+        subtitle.innerText = 'Register Operative Neural Signature';
+        submitBtn.innerText = 'INITIALIZE REGISTRATION';
+        toggleBtn.innerText = 'Sign In';
+        togglePrompt.innerText = 'Existing Operative?';
+        usernameGroup.classList.remove('hidden');
+      } else {
+        title.innerText = 'NEXUS LOGIN';
+        subtitle.innerText = 'Quantum Encrypted Workspace Access';
+        submitBtn.innerText = 'INITIALIZE SESSION';
+        toggleBtn.innerText = 'Create Identity';
+        togglePrompt.innerText = 'Unregistered Operative?';
+        usernameGroup.classList.add('hidden');
+      }
+      hideAuthError();
+    };
+
+    function showAuthError(msg) {
+      playSciFiSound('error');
+      const errBox = document.getElementById('auth-error');
+      const errText = document.getElementById('auth-error-msg');
+      errText.innerText = msg;
+      errBox.classList.remove('hidden');
+    }
+
+    function hideAuthError() {
+      document.getElementById('auth-error').classList.add('hidden');
+    }
+
+    window.handleAuthSubmit = async function(e) {
+      e.preventDefault();
+      playSciFiSound('click');
+      hideAuthError();
+
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const username = document.getElementById('auth-username').value.trim() || email.split('@')[0];
+
+      const submitBtn = document.getElementById('auth-submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> CONNECTING...`;
+
+      try {
+        let credential;
+        if (isSignupMode) {
+          credential = await createUserWithEmailAndPassword(auth, email, password);
+          await updateProfile(credential.user, { displayName: username });
+        } else {
+          credential = await signInWithEmailAndPassword(auth, email, password);
+        }
+
+        const user = credential.user;
+        const assignedRole = checkAndAssignOwnerPrivileges(user.email, user.displayName || username);
+
+        // Update user presence document with role in Firestore
+        await updateUserPresenceDoc(user, user.displayName || username, assignedRole);
+
+      } catch (error) {
+        console.error("Auth error:", error);
+        showAuthError(error.message.replace("Firebase: ", ""));
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = isSignupMode ? 'INITIALIZE REGISTRATION' : 'INITIALIZE SESSION';
+      }
+    };
+
+    window.handleLogout = async function() {
+      playSciFiSound('click');
+      if (currentUser) {
+        try {
+          const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'presence', currentUser.uid);
+          await setDoc(userRef, { isOnline: false, lastSeen: serverTimestamp() }, { merge: true });
+        } catch (e) {
+          console.warn("Logout presence error:", e);
+        }
+      }
+      await signOut(auth);
+      location.reload();
+    };
+
+    // Initialize Auth Listener
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        document.getElementById('auth-screen').classList.add('hidden');
+
+        // Check assigned role (Owner override for gojosaturo@gmail.com / Thehouneredone)
+        userRole = checkAndAssignOwnerPrivileges(user.email, user.displayName);
+
+        // Update presence and fetch role
+        await updateUserPresenceDoc(user, user.displayName, userRole);
+
+        // Setup real-time listeners
+        setupSystemListeners();
+        setupBroadcastListener();
+        setupUserSelfPresenceListener();
+
+        // Render UI
+        renderUserProfileBar();
+        updateOwnerUIFeatures();
+      } else {
+        // Attempt initial custom token if available
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          try {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } catch (e) {
+            console.warn("Custom token failed, waiting for user input.");
+          }
+        }
+      }
+    });
+
+    async function updateUserPresenceDoc(user, username, role) {
+      if (!user) return;
+      try {
+        const presenceRef = doc(db, 'artifacts', appId, 'public', 'data', 'presence', user.uid);
+        await setDoc(presenceRef, {
+          uid: user.uid,
+          email: user.email,
+          username: username || user.email.split('@')[0],
+          role: role,
+          isOnline: true,
+          lastSeen: serverTimestamp()
+        }, { merge: true });
+      } catch (e) {
+        console.error("Error updating presence:", e);
+      }
+    }
+
+    function setupUserSelfPresenceListener() {
+      if (!currentUser) return;
+      const presenceRef = doc(db, 'artifacts', appId, 'public', 'data', 'presence', currentUser.uid);
+      onSnapshot(presenceRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.role) userRole = data.role;
+          if (data.mutedUntil) {
+            mutedUntilTimestamp = data.mutedUntil;
+            checkMuteStatus();
+          } else {
+            mutedUntilTimestamp = null;
+            checkMuteStatus();
+          }
+          updateOwnerUIFeatures();
+        }
+      }, (err) => console.error("Self presence listener error:", err));
+    }
+
+    function updateOwnerUIFeatures() {
+      const isOwner = (userRole === 'owner');
+      const purgeBtn = document.getElementById('owner-purge-btn');
+      const broadcastBtn = document.getElementById('owner-broadcast-btn');
+      const roleBadge = document.getElementById('user-role-badge');
+
+      if (isOwner) {
+        purgeBtn.classList.remove('hidden');
+        purgeBtn.classList.add('flex');
+        broadcastBtn.classList.remove('hidden');
+        broadcastBtn.classList.add('flex');
+        roleBadge.classList.remove('hidden');
+      } else {
+        purgeBtn.classList.add('hidden');
+        purgeBtn.classList.remove('flex');
+        broadcastBtn.classList.add('hidden');
+        broadcastBtn.classList.remove('flex');
+        roleBadge.classList.add('hidden');
+      }
+    }
+
+    function renderUserProfileBar() {
+      if (!currentUser) return;
+      const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+      document.getElementById('user-display-name').innerText = displayName;
+      document.getElementById('user-avatar-badge').innerText = displayName.charAt(0).toUpperCase();
+      document.getElementById('user-tag-sub').innerText = (userRole === 'owner') ? '👑 Developer / Owner' : 'Online Operative';
+    }
+
+
+    /* ================= TIMED MUTE SYSTEM ================= */
+    function checkMuteStatus() {
+      const banner = document.getElementById('muted-banner');
+      const input = document.getElementById('message-input');
+      const sendBtn = document.getElementById('send-msg-btn');
+      const remainingLabel = document.getElementById('muted-time-remaining');
+
+      if (muteTimerInterval) clearInterval(muteTimerInterval);
+
+      if (mutedUntilTimestamp && mutedUntilTimestamp > Date.now()) {
+        banner.classList.remove('hidden');
+        input.disabled = true;
+        sendBtn.disabled = true;
+        input.placeholder = "NEURAL MUTE ENFORCED BY OWNER - CHAT DISABLED";
+
+        const updateCountdown = () => {
+          const remainingMs = mutedUntilTimestamp - Date.now();
+          if (remainingMs <= 0) {
+            clearInterval(muteTimerInterval);
+            banner.classList.add('hidden');
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.placeholder = "Transmit neural message...";
+          } else {
+            const mins = Math.floor(remainingMs / 60000);
+            const secs = Math.floor((remainingMs % 60000) / 1000);
+            remainingLabel.innerText = `Mute expires in: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+          }
+        };
+
+        updateCountdown();
+        muteTimerInterval = setInterval(updateCountdown, 1000);
+      } else {
+        banner.classList.add('hidden');
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.placeholder = "Transmit neural message...";
+      }
+    }
+
+
+    /* ================= SYSTEM LISTENERS ================= */
+    function setupSystemListeners() {
+      initDefaultServersAndChannels();
+      listenToServers();
+      listenToChannels();
+      listenToPresence();
+      switchChannel('general');
+    }
+
+    async function initDefaultServersAndChannels() {
+      try {
+        const serversRef = collection(db, 'artifacts', appId, 'public', 'data', 'servers');
+        const snap = await getDocs(serversRef);
+
+        if (snap.empty) {
+          // Create Default Servers
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'servers', 'nexus-prime'), {
+            name: 'NEXUS PRIME',
+            icon: '🌐',
+            order: 1
+          });
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'servers', 'cyber-core'), {
+            name: 'CYBER CORE',
+            icon: '⚡',
+            order: 2
+          });
+
+          // Create Default Channels
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'channels', 'general'), {
+            serverId: 'nexus-prime',
+            name: 'general',
+            topic: 'Primary public quantum neural channel.'
+          });
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'channels', 'announcements'), {
+            serverId: 'nexus-prime',
+            name: 'announcements',
+            topic: 'Official server updates and broadcasts.'
+          });
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'channels', 'cyber-lounge'), {
+            serverId: 'cyber-core',
+            name: 'cyber-lounge',
+            topic: 'Off-topic operative banter.'
+          });
+        }
+      } catch (e) {
+        console.error("Init defaults error:", e);
+      }
+    }
+
+    function listenToServers() {
+      if (unsubscribeServers) unsubscribeServers();
+      const serversRef = collection(db, 'artifacts', appId, 'public', 'data', 'servers');
+
+      unsubscribeServers = onSnapshot(serversRef, (snapshot) => {
+        const container = document.getElementById('server-rail-list');
+        container.innerHTML = '';
+
+        snapshot.docs.forEach(docSnap => {
+          const s = docSnap.data();
+          const id = docSnap.id;
+          const isActive = (activeViewMode === 'channel' && activeServerId === id);
+
+          const btn = document.createElement('div');
+          btn.className = `relative group cursor-pointer`;
+          btn.onclick = () => switchServer(id, s.name);
+
+          btn.innerHTML = `
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition duration-200 border ${
+              isActive 
+                ? 'bg-cyanNeon/20 border-cyanNeon text-cyanNeon shadow-cyan-glow scale-105' 
+                : 'bg-cyberCard border-cyanNeon/20 text-gray-300 hover:border-cyanNeon/50 hover:scale-105'
+            }">
+              ${s.icon || '🌐'}
+            </div>
+            ${isActive ? '<div class="absolute -left-3 top-3 w-1.5 h-6 bg-cyanNeon rounded-r"></div>' : ''}
+            <span class="absolute left-20 bg-cyberCard border border-cyanNeon/30 text-cyanNeon text-xs font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none z-50 uppercase">
+              ${s.name}
+            </span>
+          `;
+          container.appendChild(btn);
+        });
+      }, (err) => console.error("Servers snapshot error:", err));
+    }
+
+    function listenToChannels() {
+      if (unsubscribeChannels) unsubscribeChannels();
+      const channelsRef = collection(db, 'artifacts', appId, 'public', 'data', 'channels');
+
+      unsubscribeChannels = onSnapshot(channelsRef, (snapshot) => {
+        if (activeViewMode !== 'channel') return;
+
+        const listContainer = document.getElementById('channels-or-dms-list');
+        listContainer.innerHTML = '';
+
+        const channels = snapshot.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(c => c.serverId === activeServerId);
+
+        channels.forEach(ch => {
+          const isActive = (activeChannelId === ch.id);
+          const item = document.createElement('div');
+          item.className = `flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer text-xs font-bold transition ${
+            isActive 
+              ? 'bg-cyanNeon/15 text-cyanNeon border border-cyanNeon/30 shadow-cyan-glow' 
+              : 'text-gray-400 hover:text-white hover:bg-cyanNeon/5'
+          }`;
+          item.onclick = () => switchChannel(ch.id, ch.name, ch.topic);
+
+          item.innerHTML = `
+            <i class="fa-solid fa-hashtag ${isActive ? 'text-cyanNeon' : 'text-gray-500'}"></i>
+            <span class="truncate flex-1">${ch.name}</span>
+          `;
+          listContainer.appendChild(item);
+        });
+      }, (err) => console.error("Channels snapshot error:", err));
+    }
+
+
+    function listenToMessages() {
+      if (unsubscribeMessages) unsubscribeMessages();
+      const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+
+      unsubscribeMessages = onSnapshot(messagesRef, (snapshot) => {
+        const container = document.getElementById('messages-container');
+        
+        let msgs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Filter messages based on active channel or DM
+        if (activeViewMode === 'channel') {
+          msgs = msgs.filter(m => m.channelId === activeChannelId);
+        } else if (activeViewMode === 'dm') {
+          const targetDmRoom = [currentUser.uid, activeDMUserId].sort().join('_');
+          msgs = msgs.filter(m => m.dmRoomId === targetDmRoom);
+        }
+
+        // In-memory sort by timestamp
+        msgs.sort((a, b) => (a.timestamp?.toMillis() || a.createdTime || 0) - (b.timestamp?.toMillis() || b.createdTime || 0));
+
+        if (msgs.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-16 text-gray-500">
+              <i class="fa-solid fa-comment-slash text-4xl mb-3 text-cyanNeon/30"></i>
+              <p class="font-orbitron text-xs tracking-widest text-cyanNeon/70">NO NEURAL MESSAGES IN THIS STREAM</p>
+              <p class="text-[11px] text-gray-500 mt-1">Be the first operative to transmit.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = '';
+
+        msgs.forEach(msg => {
+          const isMe = (msg.senderUid === currentUser?.uid);
+          const isMsgOwner = (msg.senderRole === 'owner');
+
+          const msgCard = document.createElement('div');
+          msgCard.className = `flex items-start gap-3 p-3 rounded-xl hover:bg-cyanNeon/5 transition group relative ${
+            isMsgOwner ? 'border-l-2 border-yellowNeon/80 bg-yellowNeon/5' : ''
+          }`;
+
+          const timeStr = msg.timestamp ? new Date(msg.timestamp.toMillis()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+
+          msgCard.innerHTML = `
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${
+              isMsgOwner ? 'from-yellowNeon/40 to-purpleNeon/40 border-yellowNeon' : 'from-cyanNeon/20 to-purpleNeon/20 border-cyanNeon/40'
+            } border flex items-center justify-center font-orbitron font-bold text-white text-xs shrink-0 shadow-cyan-glow">
+              ${(msg.senderName || '?').charAt(0).toUpperCase()}
+            </div>
+
+            <div class="flex-1 overflow-hidden">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-orbitron font-bold text-xs text-white uppercase">${msg.senderName || 'Unknown Operative'}</span>
+                
+                ${isMsgOwner ? `
+                  <span class="text-[9px] bg-yellowNeon/20 border border-yellowNeon/60 text-yellowNeon px-1 rounded font-extrabold flex items-center gap-0.5 shadow-yellow-glow">
+                    <i class="fa-solid fa-crown text-[8px]"></i> OWNER
+                  </span>
+                ` : ''}
+
+                <span class="text-[10px] text-gray-500">${timeStr}</span>
+              </div>
+              <p class="text-sm text-gray-200 break-words leading-relaxed font-rajdhani text-base">${escapeHTML(msg.text)}</p>
+            </div>
+
+            ${(userRole === 'owner' || isMe) ? `
+              <button onclick="deleteSingleMessage('${msg.id}')" class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 p-1.5 transition text-xs" title="Delete Message">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            ` : ''}
+          `;
+
+          container.appendChild(msgCard);
+        });
+
+        // Auto-scroll to bottom
+        container.scrollTop = container.scrollHeight;
+
+      }, (err) => console.error("Messages snapshot error:", err));
+    }
+
+    function escapeHTML(str) {
+      return (str || '').replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+
+    window.handleSendMessage = async function(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      // Check Mute
+      if (mutedUntilTimestamp && mutedUntilTimestamp > Date.now()) {
+        playSciFiSound('error');
+        return;
+      }
+
+      const input = document.getElementById('message-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      playSciFiSound('send');
+
+      try {
+        const msgData = {
+          senderUid: currentUser.uid,
+          senderName: currentUser.displayName || currentUser.email.split('@')[0],
+          senderRole: userRole,
+          text: text,
+          timestamp: serverTimestamp(),
+          createdTime: Date.now()
+        };
+
+        if (activeViewMode === 'channel') {
+          msgData.channelId = activeChannelId;
+          msgData.serverId = activeServerId;
+        } else if (activeViewMode === 'dm') {
+          msgData.dmRoomId = [currentUser.uid, activeDMUserId].sort().join('_');
+        }
+
+        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), msgData);
+      } catch (err) {
+        console.error("Error sending message:", err);
+      }
+    };
+
+    window.deleteSingleMessage = async function(msgId) {
+      playSciFiSound('click');
+      try {
+        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
+      } catch (e) {
+        console.error("Delete message error:", e);
+      }
+    };
+
+
+    /* ================= OWNER POWERS: PURGE & BROADCAST ================= */
+    window.promptPurgeChannel = function() {
+      if (userRole !== 'owner') return;
+      playSciFiSound('click');
+      openModal('modal-purge-chat');
+    };
+
+    window.executePurgeChannel = async function() {
+      if (userRole !== 'owner') return;
+      playSciFiSound('purge');
+      closeModal('modal-purge-chat');
+
+      try {
+        const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+        const snap = await getDocs(messagesRef);
+
+        const deletePromises = [];
+        snap.docs.forEach(d => {
+          const data = d.data();
+          if (activeViewMode === 'channel' && data.channelId === activeChannelId) {
+            deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', d.id)));
+          } else if (activeViewMode === 'dm') {
+            const room = [currentUser.uid, activeDMUserId].sort().join('_');
+            if (data.dmRoomId === room) {
+              deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', d.id)));
+            }
+          }
+        });
+
+        await Promise.all(deletePromises);
+      } catch (err) {
+        console.error("Purge channel error:", err);
+      }
+    };
+
+    window.openBroadcastModal = function() {
+      if (userRole !== 'owner') return;
+      playSciFiSound('click');
+      openModal('modal-broadcast');
+    };
+
+    window.handleSendBroadcast = async function(e) {
+      e.preventDefault();
+      if (userRole !== 'owner') return;
+
+      const contentInput = document.getElementById('broadcast-content');
+      const text = contentInput.value.trim();
+      if (!text) return;
+
+      playSciFiSound('broadcast');
+      closeModal('modal-broadcast');
+      contentInput.value = '';
+
+      try {
+        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'broadcasts'), {
+          text: text,
+          senderName: currentUser.displayName || 'Owner',
+          timestamp: serverTimestamp(),
+          createdTime: Date.now()
+        });
+      } catch (e) {
+        console.error("Broadcast error:", e);
+      }
+    };
+
+    function setupBroadcastListener() {
+      if (unsubscribeBroadcasts) unsubscribeBroadcasts();
+      const ref = collection(db, 'artifacts', appId, 'public', 'data', 'broadcasts');
+
+      unsubscribeBroadcasts = onSnapshot(ref, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            const data = change.doc.data();
+            // Display alert if broadcast created recently
+            if (data.createdTime && (Date.now() - data.createdTime) < 15000) {
+              triggerBroadcastOverlay(data.text);
+            }
+          }
+        });
+      }, (err) => console.error("Broadcast listener error:", err));
+    }
+
+    function triggerBroadcastOverlay(text) {
+      playSciFiSound('broadcast');
+      const container = document.getElementById('broadcast-banner-container');
+      const textElem = document.getElementById('broadcast-banner-text');
+      textElem.innerText = text;
+
+      container.classList.remove('hidden');
+      setTimeout(() => {
+        container.classList.add('hidden');
+      }, 7000);
+    }
+
+    window.closeBroadcastBanner = function() {
+      document.getElementById('broadcast-banner-container').classList.add('hidden');
+    };
+
+
+    /* ================= PRESENCE & MODERATION SUITE ================= */
+    function listenToPresence() {
+      if (unsubscribePresence) unsubscribePresence();
+      const presenceRef = collection(db, 'artifacts', appId, 'public', 'data', 'presence');
+
+      unsubscribePresence = onSnapshot(presenceRef, (snapshot) => {
+        const membersList = document.getElementById('members-list');
+        const countBadge = document.getElementById('online-count-badge');
+
+        const users = snapshot.docs.map(d => d.data());
+        countBadge.innerText = users.filter(u => u.isOnline).length;
+
+        membersList.innerHTML = '';
+
+        users.forEach(user => {
+          if (!user.username) return;
+          const isUserOwner = (user.role === 'owner');
+          const isMuted = user.mutedUntil && user.mutedUntil > Date.now();
+
+          const card = document.createElement('div');
+          card.className = `flex items-center gap-2 p-2 rounded-xl cursor-pointer hover:bg-cyanNeon/10 transition group`;
+          card.onclick = () => openUserModModal(user);
+
+          card.innerHTML = `
+            <div class="relative">
+              <div class="w-8 h-8 rounded-xl bg-gradient-to-tr ${
+                isUserOwner ? 'from-yellowNeon/40 to-purpleNeon/40 border-yellowNeon' : 'from-cyanNeon/20 to-purpleNeon/20 border-cyanNeon/40'
+              } border flex items-center justify-center font-orbitron font-bold text-white text-xs">
+                ${user.username.charAt(0).toUpperCase()}
+              </div>
+              <div class="w-2 h-2 ${user.isOnline ? 'bg-greenNeon' : 'bg-gray-600'} border border-black rounded-full absolute -bottom-0.5 -right-0.5"></div>
+            </div>
+
+            <div class="flex-1 truncate">
+              <div class="flex items-center gap-1">
+                <span class="text-xs font-bold text-gray-200 truncate group-hover:text-cyanNeon">${user.username}</span>
+                ${isUserOwner ? `
+                  <i class="fa-solid fa-crown text-yellowNeon text-[10px]" title="Owner / Developer"></i>
+                ` : ''}
+              </div>
+              <span class="text-[10px] text-gray-500 block truncate">
+                ${isMuted ? '🔇 Muted' : (user.isOnline ? 'Active' : 'Offline')}
+              </span>
+            </div>
+          `;
+
+          membersList.appendChild(card);
+        });
+
+      }, (err) => console.error("Presence snapshot error:", err));
+    }
+
+    function openUserModModal(user) {
+      if (!currentUser) return;
+      playSciFiSound('click');
+      selectedTargetUser = user;
+
+      document.getElementById('mod-modal-username').innerText = user.username;
+      document.getElementById('mod-modal-avatar').innerText = user.username.charAt(0).toUpperCase();
+      document.getElementById('mod-modal-status').innerText = user.role === 'owner' ? '👑 OWNER / DEVELOPER' : 'OPERATIVE';
+
+      const ownerControls = document.getElementById('owner-mute-controls');
+      if (userRole === 'owner' && user.uid !== currentUser.uid) {
+        ownerControls.classList.remove('hidden');
+      } else {
+        ownerControls.classList.add('hidden');
+      }
+
+      openModal('modal-user-mod');
+    }
+
+    window.startDirectMessageWithTarget = function() {
+      if (!selectedTargetUser) return;
+      closeModal('modal-user-mod');
+      switchDMUser(selectedTargetUser.uid, selectedTargetUser.username);
+    };
+
+    window.applyTimedMute = async function(minutes) {
+      if (userRole !== 'owner' || !selectedTargetUser) return;
+      playSciFiSound('click');
+
+      const muteUntil = Date.now() + (minutes * 60 * 1000);
+      try {
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'presence', selectedTargetUser.uid);
+        await setDoc(userRef, { mutedUntil: muteUntil }, { merge: true });
+        closeModal('modal-user-mod');
+      } catch (e) {
+        console.error("Mute enforcement error:", e);
+      }
+    };
+
+    window.liftMute = async function() {
+      if (userRole !== 'owner' || !selectedTargetUser) return;
+      playSciFiSound('click');
+
+      try {
+        const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'presence', selectedTargetUser.uid);
+        await setDoc(userRef, { mutedUntil: null }, { merge: true });
+        closeModal('modal-user-mod');
+      } catch (e) {
+        console.error("Lift mute error:", e);
+      }
+    };
+
+
+    /* ================= NAVIGATION & VIEW SWITCHING ================= */
+    window.switchServer = function(serverId, serverName) {
+      playSciFiSound('click');
+      activeServerId = serverId;
+      activeViewMode = 'channel';
+
+      document.getElementById('sidebar-header-title').innerText = serverName || 'SERVER';
+      document.getElementById('sidebar-header-icon').className = 'fa-solid fa-server text-cyanNeon';
+      document.getElementById('dm-indicator').classList.add('hidden');
+
+      // Fetch first channel of server
+      getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'channels')).then(snap => {
+        const ch = snap.docs.map(d => ({ id: d.id, ...d.data() })).find(c => c.serverId === serverId);
+        if (ch) {
+          switchChannel(ch.id, ch.name, ch.topic);
+        } else {
+          listenToChannels();
+        }
+      });
+    };
+
+    window.switchChannel = function(channelId, channelName, topic) {
+      playSciFiSound('click');
+      activeChannelId = channelId;
+      activeViewMode = 'channel';
+
+      document.getElementById('active-chat-title').innerText = channelName || 'general';
+      document.getElementById('active-chat-icon').className = 'fa-solid fa-hashtag text-cyanNeon text-lg';
+      document.getElementById('active-chat-type-badge').innerText = 'CHANNEL';
+      document.getElementById('active-chat-topic').innerText = topic || 'Public quantum neural feed.';
+
+      listenToChannels();
+      listenToMessages();
+    };
+
+    window.openDirectMessagesHome = async function() {
+      playSciFiSound('click');
+      activeViewMode = 'dm';
+
+      document.getElementById('sidebar-header-title').innerText = 'DIRECT MESSAGES';
+      document.getElementById('sidebar-header-icon').className = 'fa-solid fa-comments text-cyanNeon';
+      document.getElementById('dm-indicator').classList.remove('hidden');
+
+      // Load all presence users as DM targets
+      const snapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'presence'));
+      const listContainer = document.getElementById('channels-or-dms-list');
+      listContainer.innerHTML = '';
+
+      snapshot.docs.forEach(docSnap => {
+        const u = docSnap.data();
+        if (u.uid === currentUser?.uid) return;
+
+        const item = document.createElement('div');
+        item.className = `flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer text-xs font-bold text-gray-300 hover:text-cyanNeon hover:bg-cyanNeon/10 transition`;
+        item.onclick = () => switchDMUser(u.uid, u.username);
+
+        item.innerHTML = `
+          <div class="w-6 h-6 rounded-lg bg-cyanNeon/20 border border-cyanNeon/40 flex items-center justify-center font-orbitron text-[10px] text-white">
+            ${u.username.charAt(0).toUpperCase()}
+          </div>
+          <span class="truncate flex-1">${u.username}</span>
+          ${u.role === 'owner' ? '<i class="fa-solid fa-crown text-yellowNeon text-[10px]"></i>' : ''}
+        `;
+        listContainer.appendChild(item);
+      });
+    };
+
+    window.switchDMUser = function(targetUid, targetUsername) {
+      playSciFiSound('click');
+      activeViewMode = 'dm';
+      activeDMUserId = targetUid;
+
+      document.getElementById('active-chat-title').innerText = `@${targetUsername}`;
+      document.getElementById('active-chat-icon').className = 'fa-solid fa-user-gear text-purpleNeon text-lg';
+      document.getElementById('active-chat-type-badge').innerText = 'PRIVATE DM';
+      document.getElementById('active-chat-topic').innerText = `Encrypted 1-on-1 private channel with ${targetUsername}.`;
+
+      listenToMessages();
+    };
+
+
+    /* ================= MODAL & UI CONTROLS ================= */
+    window.openModal = function(id) {
+      document.getElementById(id).classList.remove('hidden');
+    };
+
+    window.closeModal = function(id) {
+      playSciFiSound('click');
+      document.getElementById(id).classList.add('hidden');
+    };
+
+    window.openCreateServerModal = function() {
+      playSciFiSound('click');
+      openModal('modal-create-server');
+    };
+
+    window.openCreateChannelModal = function() {
+      playSciFiSound('click');
+      openModal('modal-create-channel');
+    };
+
+    window.handleCreateServerSubmit = async function(e) {
+      e.preventDefault();
+      playSciFiSound('click');
+      const name = document.getElementById('new-server-name').value.trim();
+      const icon = document.getElementById('new-server-icon').value.trim() || '🌐';
+
+      if (!name) return;
+      const serverId = name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+
+      try {
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'servers', serverId), {
+          name: name,
+          icon: icon,
+          createdTime: Date.now()
+        });
+
+        // Add default general channel
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'channels', `${serverId}-general`), {
+          serverId: serverId,
+          name: 'general',
+          topic: `Welcome to ${name}.`
+        });
+
+        closeModal('modal-create-server');
+        switchServer(serverId, name);
+      } catch (err) {
+        console.error("Create server error:", err);
+      }
+    };
+
+    window.handleCreateChannelSubmit = async function(e) {
+      e.preventDefault();
+      playSciFiSound('click');
+      const name = document.getElementById('new-channel-name').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const topic = document.getElementById('new-channel-topic').value.trim() || 'Quantum stream node.';
+
+      if (!name) return;
+      const channelId = `${activeServerId}-${name}`;
+
+      try {
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'channels', channelId), {
+          serverId: activeServerId,
+          name: name,
+          topic: topic
+        });
+
+        closeModal('modal-create-channel');
+        switchChannel(channelId, name, topic);
+      } catch (err) {
+        console.error("Create channel error:", err);
+      }
+    };
+
+    window.toggleEmojiPicker = function() {
+      playSciFiSound('click');
+      const picker = document.getElementById('emoji-picker');
+      picker.classList.toggle('hidden');
+    };
+
+    window.insertEmoji = function(emoji) {
+      playSciFiSound('click');
+      const input = document.getElementById('message-input');
+      input.value += emoji;
+      document.getElementById('emoji-picker').classList.add('hidden');
+      input.focus();
+    };
+
+    window.toggleMembersSidebar = function() {
+      playSciFiSound('click');
+      const sidebar = document.getElementById('members-sidebar');
+      sidebar.classList.toggle('hidden');
+    };
+
+    window.openMyProfileModal = function() {
+      if (currentUser) {
+        openUserModModal({
+          uid: currentUser.uid,
+          username: currentUser.displayName || currentUser.email.split('@')[0],
+          role: userRole,
+          isOnline: true
+        });
+      }
+    };
+
+  </script>
+</body>
+</html>
