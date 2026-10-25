@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#1e1f22]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Web Workspace</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blurple: '#5865f2',
+            blurpleHover: '#4752c4',
+            discordDarkBg: '#313338',
+            discordServerBg: '#1e1f22',
+            discordSidebarBg: '#2b2d31',
+            discordInputBg: '#383a40',
+            discordHover: '#35373c',
+            discordTextMuted: '#949ba4',
+            discordOnline: '#23a55a'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar matching Discord design */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #2b2d31;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1a1b1e;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #111214;
+    }
+    .emoji-picker-shadow {
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body class="h-full font-sans text-gray-200 select-none overflow-hidden antialiased">
+
+<div id="app" class="h-full flex w-full relative">
+
+  <!-- ================= AUTH CONTAINER ================= -->
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#111214] p-4 bg-opacity-95">
+    <div class="w-full max-w-md bg-[#313338] p-8 rounded-lg shadow-2xl border border-gray-800 relative overflow-hidden">
+      
+      <!-- Brand Logo / Header -->
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-blurple rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+          <i class="fa-brands fa-discord text-3xl text-white"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white tracking-wide" id="auth-title">Welcome Back!</h2>
+        <p class="text-xs text-discordTextMuted mt-1" id="auth-subtitle">We're so excited to see you again!</p>
+      </div>
+
+      <!-- Error Alert -->
+      <div id="auth-error" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded text-red-300 text-xs flex items-center gap-2">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span id="auth-error-msg">Authentication error occurred.</span>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <!-- Display Name (Signup Only) -->
+        <div id="username-field-group" class="hidden mb-4">
+          <label class="block text-xs font-bold text-discordTextMuted uppercase mb-2">Username</label>
+          <input type="text" id="auth-username" class="w-full bg-[#1e1f22] text-white p-2.5 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blurple" placeholder="e.g. NightOwl">
+        </div>
+
+        <!-- Email Field -->
+        <div class="mb-4">
+          <label class="block text-xs font-bold text-discordTextMuted uppercase mb-2">Email</label>
+          <input type="email" id="auth-email" required class="w-full bg-[#1e1f22] text-white p-2.5 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blurple" placeholder="user@example.com">
+        </div>
+
+        <!-- Password Field -->
+        <div class="mb-6">
+          <label class="block text-xs font-bold text-discordTextMuted uppercase mb-2">Password</label>
+          <input type="password" id="auth-password" required minlength="6" class="w-full bg-[#1e1f22] text-white p-2.5 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blurple" placeholder="••••••••">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="auth-submit-btn" class="w-full bg-blurple hover:bg-blurpleHover text-white font-semibold py-2.5 rounded transition duration-200 text-sm shadow">
+          Log In
+        </button>
+      </form>
+
+      <!-- Toggle Mode -->
+      <div class="mt-4 text-xs text-discordTextMuted text-left">
+        <span id="auth-toggle-prompt">Need an account?</span>
+        <button type="button" onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-blurple hover:underline font-medium ml-1">
+          Register
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= MAIN APP LAYOUT ================= -->
+  <!-- 1. Server Navigation Rail -->
+  <div class="w-18 bg-discordServerBg flex flex-col items-center py-3 gap-2 z-20 shrink-0">
+    <!-- Home / Discord Icon -->
+    <div class="relative group cursor-pointer">
+      <div class="w-12 h-12 bg-blurple rounded-3xl group-hover:rounded-2xl transition-all duration-200 flex items-center justify-center text-white shadow">
+        <i class="fa-brands fa-discord text-2xl"></i>
+      </div>
+      <div class="absolute left-0 top-3 w-1 h-6 bg-white rounded-r hidden group-hover:block"></div>
+    </div>
+
+    <div class="w-8 h-[2px] bg-[#35363c] rounded my-1"></div>
+
+    <!-- Active Server -->
+    <div class="relative group cursor-pointer">
+      <div class="w-12 h-12 bg-blurple rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-md ring-2 ring-blurple">
+        JS
+      </div>
+      <div class="absolute left-0 top-2 w-1 h-8 bg-white rounded-r"></div>
+    </div>
+
+    <div class="relative group cursor-pointer opacity-60 hover:opacity-100 transition">
+      <div class="w-12 h-12 bg-discordSidebarBg hover:bg-blurple rounded-3xl hover:rounded-2xl transition-all duration-200 flex items-center justify-center text-gray-200 hover:text-white">
+        <i class="fa-solid fa-compass text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Channels Sidebar -->
+  <div class="w-60 bg-discordSidebarBg flex flex-col justify-between shrink-0 border-r border-[#232428]">
+    <!-- Server Header -->
+    <div class="h-12 border-b border-[#1f2023] px-4 flex items-center justify-between font-bold text-white shadow-sm">
+      <span class="truncate">Dev Community Hub</span>
+      <i class="fa-solid fa-chevron-down text-xs text-discordTextMuted"></i>
+    </div>
+
+    <!-- Channel List -->
+    <div class="flex-1 overflow-y-auto px-2 py-3 space-y-1" id="channel-list">
+      <div class="text-xs font-bold text-discordTextMuted px-2 mb-1 uppercase tracking-wider flex items-center justify-between">
+        <span>Text Channels</span>
+        <i class="fa-solid fa-plus cursor-pointer hover:text-white" title="Channels managed automatically"></i>
+      </div>
+
+      <!-- Channels will be populated here dynamically -->
+    </div>
+
+    <!-- User Profile Bar (Bottom) -->
+    <div class="h-14 bg-[#232428] px-2 flex items-center justify-between">
+      <div class="flex items-center gap-2 overflow-hidden cursor-pointer p-1 rounded hover:bg-[#35373c]/50 flex-1">
+        <div class="relative shrink-0">
+          <div id="user-avatar" class="w-8 h-8 rounded-full bg-blurple flex items-center justify-center font-bold text-white text-xs">
+            ?
+          </div>
+          <div class="w-3 h-3 bg-discordOnline border-2 border-[#232428] rounded-full absolute -bottom-0.5 -right-0.5"></div>
+        </div>
+        <div class="flex flex-col truncate">
+          <span id="user-display-name" class="text-xs font-bold text-white truncate">Guest</span>
+          <span id="user-status-text" class="text-[10px] text-discordTextMuted truncate">Online</span>
+        </div>
+      </div>
+
+      <button onclick="handleLogout()" class="p-2 text-discordTextMuted hover:text-red-400 rounded transition" title="Log Out">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Central Chat Area -->
+  <div class="flex-1 flex flex-col bg-discordDarkBg relative">
+    
+    <!-- Channel Header -->
+    <div class="h-12 border-b border-[#232428] px-4 flex items-center justify-between shadow-sm bg-discordDarkBg">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-hashtag text-discordTextMuted text-lg"></i>
+        <span id="active-channel-name" class="font-bold text-white">general</span>
+        <span class="text-xs text-discordTextMuted border-l border-gray-700 pl-3 hidden sm:inline" id="channel-desc">
+          General discussion and developer hangout.
+        </span>
+      </div>
+      <div class="flex items-center gap-4 text-discordTextMuted text-lg">
+        <i class="fa-solid fa-bell cursor-pointer hover:text-white"></i>
+        <i class="fa-solid fa-thumbtack cursor-pointer hover:text-white"></i>
+        <i class="fa-solid fa-users cursor-pointer hover:text-white sm:hidden" onclick="toggleMembersList()"></i>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <div class="text-center py-8 text-discordTextMuted">
+        <i class="fa-solid fa-circle-notch fa-spin text-2xl mb-2"></i>
+        <p class="text-xs">Connecting to channel live feed...</p>
+      </div>
+    </div>
+
+    <!-- Quick Emoji Bar / Popover -->
+    <div id="emoji-picker" class="hidden absolute bottom-16 right-6 bg-[#2b2d31] border border-gray-700 rounded-lg p-2 emoji-picker-shadow z-30 grid grid-cols-6 gap-2 text-xl">
+      <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('👍')">👍</span>
+      <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🔥')">🔥</span>
+      <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('❤️')">❤️</span>
+      <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🎉')">🎉</span>
+      <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('🚀')">🚀</span>
+      <span class="cursor-pointer hover:scale-125 transition" onclick="insertEmoji('😂')">😂</span>
+    </div>
+
+    <!-- Message Input Bar -->
+    <div class="p-4 bg-discordDarkBg pt-0">
+      <form onsubmit="handleSendMessage(event)" class="bg-discordInputBg rounded-lg px-4 py-2.5 flex items-center gap-3">
+        <button type="button" class="text-discordTextMuted hover:text-white text-lg">
+          <i class="fa-solid fa-circle-plus"></i>
+        </button>
+        <input type="text" id="message-input" autocomplete="off" placeholder="Message #general" class="bg-transparent text-white w-full text-sm focus:outline-none">
+        <button type="button" onclick="toggleEmojiPicker()" class="text-discordTextMuted hover:text-yellow-400 text-lg">
+          <i class="fa-solid fa-face-smile"></i>
+        </button>
+        <button type="submit" class="bg-blurple hover:bg-blurpleHover text-white px-3 py-1 rounded text-xs font-semibold shadow">
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Member List Sidebar -->
+  <div id="members-sidebar" class="w-60 bg-discordSidebarBg p-3 hidden md:flex flex-col border-l border-[#232428] shrink-0 overflow-y-auto">
+    <div class="text-xs font-bold text-discordTextMuted uppercase mb-2 px-2" id="online-count-header">
+      Online — 0
+    </div>
+    <div id="members-list" class="space-y-1">
+      <!-- Member entries inserted dynamically -->
+    </div>
+  </div>
+
+</div>
+
+<!-- Firebase SDK Imports -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    updateProfile, 
+    onAuthStateChanged, 
+    signOut,
+    signInWithCustomToken
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { 
+    getFirestore, 
+    collection, 
+    doc, 
+    setDoc, 
+    addDoc, 
+    onSnapshot, 
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  // Custom Firebase configuration for nexus-chat-b08ad
+  const firebaseConfig = {
+    apiKey: "AIzaSyAA3DH6J7rAbJpJ0S8HWpcbJOhIarC9aa8",
+    authDomain: "nexus-chat-b08ad.firebaseapp.com",
+    projectId: "nexus-chat-b08ad",
+    storageBucket: "nexus-chat-b08ad.firebasestorage.app",
+    messagingSenderId: "288153271485",
+    appId: "1:288153271485:web:feb594a566e1b8ccd04bd4",
+    measurementId: "G-JLERQS6WWE"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Application State
+  let currentUser = null;
+  let currentChannel = 'general';
+  let isSignupMode = false;
+  let unsubscribeMessages = null;
+  let unsubscribeMembers = null;
+
+  const CHANNELS = [
+    { id: 'general', name: 'general', desc: 'General developer discussion and chat.' },
+    { id: 'lounge', name: 'lounge', desc: 'Off-topic discussions and relaxed talk.' },
+    { id: 'gaming', name: 'gaming', desc: 'Game recommendations, setups, and streaming.' },
+    { id: 'announcements', name: 'announcements', desc: 'Official updates and channel news.' }
+  ];
+
+  // Firestore Document / Collection Helpers
+  const getPublicDocPath = (colName, docId) => doc(db, colName, docId);
+  const getPublicColPath = (colName) => collection(db, colName);
+
+  // 1. Initial Authentication Handler
+  async function initAuth() {
+    try {
+      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+        await signInWithCustomToken(auth, __initial_auth_token);
+      }
+    } catch (e) {
+      console.warn("Custom token login failed, falling back to standard auth state listener", e);
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        document.getElementById('auth-screen').classList.add('hidden');
+        updateUserProfileUI();
+        await registerPresence(user);
+        renderChannels();
+        switchChannel(currentChannel);
+        listenToActiveMembers();
+      } else {
+        currentUser = null;
+        document.getElementById('auth-screen').classList.remove('hidden');
+      }
+    });
+  }
+
+  // 2. Auth Form Handler (Login / Signup)
+  window.handleAuthSubmit = async function(e) {
+    e.preventDefault();
+    clearAuthError();
+
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    const username = document.getElementById('auth-username').value;
+
+    try {
+      if (isSignupMode) {
+        if (!username.trim()) {
+          showAuthError("Please enter a username.");
+          return;
+        }
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCred.user, { displayName: username });
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+    } catch (err) {
+      showAuthError(err.message.replace("Firebase: ", ""));
+    }
+  };
+
+  // Toggle Login/Signup UI
+  window.toggleAuthMode = function() {
+    isSignupMode = !isSignupMode;
+    const title = document.getElementById('auth-title');
+    const subtitle = document.getElementById('auth-subtitle');
+    const usernameGroup = document.getElementById('username-field-group');
+    const submitBtn = document.getElementById('auth-submit-btn');
+    const togglePrompt = document.getElementById('auth-toggle-prompt');
+    const toggleBtn = document.getElementById('auth-toggle-btn');
+
+    if (isSignupMode) {
+      title.textContent = "Create an account";
+      subtitle.textContent = "Join our real-time developer community today!";
+      usernameGroup.classList.remove('hidden');
+      submitBtn.textContent = "Continue";
+      togglePrompt.textContent = "Already have an account?";
+      toggleBtn.textContent = "Log In";
+    } else {
+      title.textContent = "Welcome Back!";
+      subtitle.textContent = "We're so excited to see you again!";
+      usernameGroup.classList.add('hidden');
+      submitBtn.textContent = "Log In";
+      togglePrompt.textContent = "Need an account?";
+      toggleBtn.textContent = "Register";
+    }
+  };
+
+  function showAuthError(msg) {
+    const errorBox = document.getElementById('auth-error');
+    document.getElementById('auth-error-msg').textContent = msg;
+    errorBox.classList.remove('hidden');
+  }
+
+  function clearAuthError() {
+    document.getElementById('auth-error').classList.add('hidden');
+  }
+
+  window.handleLogout = function() {
+    signOut(auth);
+  };
+
+  // 3. User Presence & Profiles
+  async function registerPresence(user) {
+    if (!user) return;
+    try {
+      const userDocRef = getPublicDocPath('presence', user.uid);
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        displayName: user.displayName || user.email.split('@')[0],
+        email: user.email,
+        lastSeen: serverTimestamp(),
+        online: true
+      }, { merge: true });
+    } catch (e) {
+      console.error("Presence registration error:", e);
+    }
+  }
+
+  function updateUserProfileUI() {
+    if (!currentUser) return;
+    const name = currentUser.displayName || currentUser.email.split('@')[0];
+    document.getElementById('user-display-name').textContent = name;
+    document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+  }
+
+  // 4. Channel Rendering & Navigation
+  function renderChannels() {
+    const channelListEl = document.getElementById('channel-list');
+    channelListEl.innerHTML = `
+      <div class="text-xs font-bold text-discordTextMuted px-2 mb-1 uppercase tracking-wider flex items-center justify-between">
+        <span>Text Channels</span>
+      </div>
+    `;
+
+    CHANNELS.forEach(ch => {
+      const isActive = ch.id === currentChannel;
+      const btn = document.createElement('div');
+      btn.className = `flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition ${
+        isActive ? 'bg-discordHover text-white font-semibold' : 'text-discordTextMuted hover:bg-discordHover hover:text-gray-200'
+      }`;
+      btn.innerHTML = `
+        <i class="fa-solid fa-hashtag text-gray-500 text-sm"></i>
+        <span class="text-sm truncate">${ch.name}</span>
+      `;
+      btn.onclick = () => switchChannel(ch.id);
+      channelListEl.appendChild(btn);
+    });
+  }
+
+  function switchChannel(channelId) {
+    currentChannel = channelId;
+    const selected = CHANNELS.find(c => c.id === channelId);
+    
+    document.getElementById('active-channel-name').textContent = selected.name;
+    document.getElementById('channel-desc').textContent = selected.desc;
+    document.getElementById('message-input').placeholder = `Message #${selected.name}`;
+
+    renderChannels();
+    listenToMessages(channelId);
+  }
+
+  // 5. Real-Time Chat Subscriptions
+  function listenToMessages(channelId) {
+    if (unsubscribeMessages) unsubscribeMessages();
+
+    const messagesContainer = document.getElementById('messages-container');
+    messagesContainer.innerHTML = '<div class="text-center text-xs text-discordTextMuted py-4">Loading messages...</div>';
+
+    const msgCollection = getPublicColPath('messages');
+
+    unsubscribeMessages = onSnapshot(msgCollection, (snapshot) => {
+      const messages = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.channelId === channelId) {
+          messages.push({ id: doc.id, ...data });
+        }
+      });
+
+      // Sort by timestamp ascending
+      messages.sort((a, b) => {
+        const t1 = a.timestamp?.toMillis ? a.timestamp.toMillis() : (a.timestamp || 0);
+        const t2 = b.timestamp?.toMillis ? b.timestamp.toMillis() : (b.timestamp || 0);
+        return t1 - t2;
+      });
+
+      renderMessages(messages);
+    }, (error) => {
+      console.error("Messages fetch failed:", error);
+    });
+  }
+
+  function renderMessages(messages) {
+    const container = document.getElementById('messages-container');
+    if (messages.length === 0) {
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center h-full text-discordTextMuted">
+          <i class="fa-solid fa-comments text-4xl mb-2"></i>
+          <p class="font-semibold text-white">Welcome to #${currentChannel}!</p>
+          <p class="text-xs">This is the start of the #${currentChannel} channel.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = '';
+    messages.forEach(msg => {
+      const timeStr = msg.timestamp?.seconds 
+        ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : 'Just now';
+
+      const avatarLetter = (msg.senderName || 'U').charAt(0).toUpperCase();
+
+      const msgEl = document.createElement('div');
+      msgEl.className = "flex items-start gap-3 hover:bg-[#2e3035] -mx-4 px-4 py-1.5 transition rounded";
+      msgEl.innerHTML = `
+        <div class="w-10 h-10 rounded-full bg-blurple flex items-center justify-center font-bold text-white shrink-0 mt-0.5">
+          ${avatarLetter}
+        </div>
+        <div class="flex flex-col overflow-hidden">
+          <div class="flex items-center gap-2">
+            <span class="font-semibold text-white text-sm hover:underline cursor-pointer">${escapeHtml(msg.senderName || 'User')}</span>
+            <span class="text-[10px] text-discordTextMuted">${timeStr}</span>
+          </div>
+          <p class="text-sm text-gray-300 break-words mt-0.5">${escapeHtml(msg.content)}</p>
+        </div>
+      `;
+      container.appendChild(msgEl);
+    });
+
+    // Auto scroll to bottom
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // Send Message Handler
+  window.handleSendMessage = async function(e) {
+    e.preventDefault();
+    const input = document.getElementById('message-input');
+    const content = input.value.trim();
+
+    if (!content || !currentUser) return;
+
+    input.value = '';
+
+    try {
+      await addDoc(getPublicColPath('messages'), {
+        channelId: currentChannel,
+        senderUid: currentUser.uid,
+        senderName: currentUser.displayName || currentUser.email.split('@')[0],
+        content: content,
+        timestamp: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Error sending message:", err);
+    }
+  };
+
+  // 6. Member List Subscriptions
+  function listenToActiveMembers() {
+    if (unsubscribeMembers) unsubscribeMembers();
+
+    unsubscribeMembers = onSnapshot(getPublicColPath('presence'), (snapshot) => {
+      const members = [];
+      snapshot.forEach(doc => {
+        members.push(doc.data());
+      });
+
+      const membersList = document.getElementById('members-list');
+      const header = document.getElementById('online-count-header');
+      header.textContent = `Online — ${members.length}`;
+
+      membersList.innerHTML = '';
+      members.forEach(member => {
+        const item = document.createElement('div');
+        item.className = "flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#35373c]/60 cursor-pointer";
+        item.innerHTML = `
+          <div class="relative shrink-0">
+            <div class="w-8 h-8 rounded-full bg-blurple flex items-center justify-center text-xs font-bold text-white">
+              ${(member.displayName || 'U').charAt(0).toUpperCase()}
+            </div>
+            <div class="w-2.5 h-2.5 bg-discordOnline border-2 border-discordSidebarBg rounded-full absolute -bottom-0.5 -right-0.5"></div>
+          </div>
+          <div class="flex flex-col truncate">
+            <span class="text-xs font-medium text-gray-200 truncate">${escapeHtml(member.displayName || 'User')}</span>
+          </div>
+        `;
+        membersList.appendChild(item);
+      });
+    }, (error) => {
+      console.error("Presence update failed:", error);
+    });
+  }
+
+  // 7. Interactive UI Helpers
+  window.toggleEmojiPicker = function() {
+    const picker = document.getElementById('emoji-picker');
+    picker.classList.toggle('hidden');
+  };
+
+  window.insertEmoji = function(emoji) {
+    const input = document.getElementById('message-input');
+    input.value += emoji;
+    document.getElementById('emoji-picker').classList.add('hidden');
+    input.focus();
+  };
+
+  window.toggleMembersList = function() {
+    const sidebar = document.getElementById('members-sidebar');
+    sidebar.classList.toggle('hidden');
+  };
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // Initialize Application on Window Load
+  window.addEventListener('DOMContentLoaded', () => {
+    initAuth();
+  });
+</script>
+</body>
+</html>
